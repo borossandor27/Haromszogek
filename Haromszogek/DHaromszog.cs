@@ -8,36 +8,30 @@ namespace Haromszogek
 {
     class DHaromszog
     {
-        double aOldal;
-        double bOldal;
-        double cOldal;
-        public double a ;
-        public double b ;
-        public double c ;
-        bool ellDerekszogu;
-        bool ellMegszerkesztheto;
-        bool ellNovekvosorrend;
-        public double Kerulet { get => a + b + c; }
-        public int SorSzama { get => sorSzama; set => sorSzama = value; }
-        public double Terulet { get => (a * b) / 2; set => terulet = value; }
-        public DHaromszog(string sor, int sorSzama)
-            {
-            string[] oldalak = sor.Split(' ');
-            aOldal = double.Parse(oldalak[0]);
-            bOldal = double.Parse(oldalak[1]);
-            cOldal = double.Parse(oldalak[2]);
-            if (aOldal<=bOldal && bOldal<=cOldal)
-            {
-                ellNovekvosorrend = true;
-            }
-            else
-            {
-                ellNovekvosorrend = false;
-            }
-            ellMegszerkesztheto = (aOldal + bOldal > cOldal) ? true : false;
-            ellDerekszogu = (aOldal * aOldal + bOldal * bOldal == cOldal * cOldal) ? true : false;
-        }
-        private double terulet;
+        //-- Fields ------------------
+        private double aOldal;
+        private double bOldal;
+        private double cOldal;
         private int sorSzama;
+
+        //-- Properties -------------------
+        public double a { get => aOldal; set => aOldal = value; }
+        public double b { get => bOldal; set => bOldal = value; }
+        public double c { get => cOldal; set => cOldal = value; }
+        public bool EllDerekszogu { get => Math.Abs((aOldal * aOldal + bOldal * bOldal) - (cOldal * cOldal)) < 10E-7;  }
+        public bool EllMegszerkesztheto { get => (aOldal + bOldal > cOldal); }
+        public bool EllNovekvosorrend { get => (aOldal <= bOldal && bOldal <= cOldal); }
+        public double Kerulet { get => aOldal + bOldal + cOldal; }
+        public int SorSzama { get => sorSzama; set => sorSzama = value; }
+        public double Terulet { get => (aOldal * bOldal) / 2; }
+
+        public DHaromszog(string sor, int ssz)
+        {
+            this.SorSzama = ssz;
+            string[] oldalak = sor.Split(' ');
+            a = double.Parse(oldalak[0]);
+            b = double.Parse(oldalak[1]);
+            c = double.Parse(oldalak[2]);
+        }
     }
 }
