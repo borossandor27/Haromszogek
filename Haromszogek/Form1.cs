@@ -26,6 +26,14 @@ namespace Haromszogek
 
         private void button_Adatbetoltes_Click(object sender, EventArgs e)
         {
+            //-- Az elemek nullázása ---------------------------------------------------------
+            Haromszogek.Clear();
+            listBox_Derekszogek.Items.Clear();
+            listBox_Hibak.Items.Clear();
+            label_Kerulet.Text = "Kerület = ";
+            label_Terulet.Text = "Terület = ";
+            
+            //-- Szövegállomány megnyitása ---------------------------------------------------
             openFileDialog1.Filter = "Minden fájl (*.*)|*.*|Szövegfájlok (*.txt)|*.txt";
             openFileDialog1.FilterIndex = 2;
             openFileDialog1.FileName = "haromszogek.txt";
@@ -42,15 +50,15 @@ namespace Haromszogek
                     {
                         while (!sr.EndOfStream)
                         {
-                            DHaromszog uj = new DHaromszog(sr.ReadLine(), ++ssz);
-                            Haromszogek.Add(uj);
-                            if (uj.EllDerekszogu && uj.EllMegszerkesztheto && uj.EllNovekvosorrend && uj.a > 0 && uj.b > 0 && uj.c > 0)
+                            try
                             {
+                                DHaromszog uj = new DHaromszog(sr.ReadLine(), ++ssz);
+                                Haromszogek.Add(uj);    //-- Csak hibátlan elemeket kell tárolni! --------------------
                                 listBox_Derekszogek.Items.Add(string.Join(" ", string.Format("{0,4}", uj.SorSzama) + ". sor: a=", uj.a.ToString(maszk), "b=", uj.b.ToString(maszk), "c=", uj.c.ToString(maszk)));
                             }
-                            else
+                            catch (SajatHibakezelo ex)
                             {
-                                listBox_Hibak.Items.Add(Hibaszoveg(uj));
+                                listBox_Hibak.Items.Add(ex.Message);
                             }
                         }
                     }
@@ -60,36 +68,6 @@ namespace Haromszogek
                     MessageBox.Show(ex.Message);
                 }
             }
-        }
-
-        private string Hibaszoveg(DHaromszog hibas)
-        {
-            string szoveg = string.Format("{0,3}", hibas.SorSzama) + ". sor: ";
-            if (!hibas.EllDerekszogu)
-            {
-                szoveg += "A háromszög nem derékszögű!";
-            }
-            else if (hibas.a <= 0)
-            {
-                szoveg += "Az 'a' oldal nem lehet nulla vagy negatív!";
-            }
-            else if (hibas.b <= 0)
-            {
-                szoveg += "A 'b' oldal nem lehet nulla vagy negatív!";
-            }
-            else if (hibas.c <= 0)
-            {
-                szoveg += "A 'c' oldal nem lehet nulla vagy negatív!";
-            }
-            else if (!hibas.EllMegszerkesztheto)
-            {
-                szoveg += "A háromszöget nem lehet megszerkeszteni!";
-            }
-            else if (!hibas.EllNovekvosorrend)
-            {
-                szoveg += "Az adatok nincsenek növekvő sorrendben!";
-            }
-            return szoveg;
         }
 
         private void listBox_Derekszogek_SelectedIndexChanged(object sender, EventArgs e)
